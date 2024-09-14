@@ -25,7 +25,9 @@ main :: IO ()
 main = do
   args <- getArgs
   let fileName = head args
-  input <- readFile fileName
+  file <- openFile fileName ReadMode
+  input <- hGetContents file
   let summary = (countsText . getCounts) input
+  putStrLn summary -- must print here to force summary to load
+  hClose file
   appendFile "stats.dat" (mconcat [fileName, " ", summary, "\n"])
-  putStrLn summary
